@@ -43,23 +43,15 @@ class EquipmentCategory(models.Model):
         return self.name
 
 
-class CNCLathe(models.Model):
+class Equipment(models.Model):
     class Meta:
-        verbose_name = 'Токарный станок с ЧПУ'
-        verbose_name_plural = 'Токарные станки с ЧПУ'
+        verbose_name = 'Оборудование'
+        verbose_name_plural = 'Оборудование'
 
     brand = models.CharField(max_length=100, verbose_name='Марка')
-    model = models.CharField(max_length=100, verbose_name='Модель')
-    description = models.TextField(verbose_name='Описание')
-    move_x = models.IntegerField(verbose_name='Перемещение по оси X, мм')
-    move_y = models.IntegerField(verbose_name='Перемещение по оси Z, мм')
-    spindle_speed = models.IntegerField(verbose_name='Обороты шпинделя, об/мин')
-    number_of_positions = models.IntegerField(verbose_name='Количество позиций в револьверной головке')
-    length = models.IntegerField(verbose_name='Длинна')
-    width = models.IntegerField(verbose_name='Ширина')
-    height = models.IntegerField(verbose_name='Высота')
-    weight = models.IntegerField(verbose_name='Вес')
-    additional_information = models.URLField(verbose_name='Дополнительная информация', null=True)
+    model = models.CharField(max_length=100, verbose_name='Модель', null=True)
+    category = models.ForeignKey('EquipmentCategory', on_delete=models.PROTECT, verbose_name='Категория')
+    information_employee = models.FileField(upload_to='description_equipment/%Y/%m/%d/', verbose_name='Описание')
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', verbose_name='Фото')
     location = models.CharField(max_length=255, verbose_name='Расположение')
 
@@ -67,14 +59,14 @@ class CNCLathe(models.Model):
         return f'{self.brand} {self.model}'
 
 
-class CNCLatheEmployee(models.Model):
+class EquipmentEmployee(models.Model):
     class Meta:
-        verbose_name = 'Токарный станок с ЧПУ - Сотрудник'
-        verbose_name_plural = 'Токарный станок с ЧПУ - Сотрудник'
-        unique_together = ['cnc_lathe', 'employee']
+        verbose_name = 'Оборудование - Сотрудник'
+        verbose_name_plural = 'Оборудование - Сотрудник'
+        unique_together = ['equipment', 'employee']
 
-    cnc_lathe = models.ForeignKey('CNCLathe', on_delete=models.PROTECT, verbose_name="Токарный станок с ЧПУ")
+    equipment = models.ForeignKey('Equipment', on_delete=models.PROTECT, verbose_name="Оборудование")
     employee = models.ForeignKey('Employee', on_delete=models.PROTECT, verbose_name="Сотрудник, допущенный к работе")
 
     def __str__(self):
-        return f'{self.cnc_lathe} - {self.employee}'
+        return f'{self.equipment} - {self.employee}'
