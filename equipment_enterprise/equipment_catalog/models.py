@@ -1,3 +1,4 @@
+import json
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -51,12 +52,18 @@ class Equipment(models.Model):
     brand = models.CharField(max_length=100, verbose_name='Марка')
     model = models.CharField(max_length=100, verbose_name='Модель', null=True)
     category = models.ForeignKey('EquipmentCategory', on_delete=models.PROTECT, verbose_name='Категория')
-    information_employee = models.FileField(upload_to='description_equipment/%Y/%m/%d/', verbose_name='Описание')
+    information_employee = models.FileField(upload_to='description_equipment/%Y/%m/%d/', verbose_name='Характеристики')
+    additional_information = models.URLField(verbose_name='Дополнительная информация', null=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', verbose_name='Фото')
     location = models.CharField(max_length=255, verbose_name='Расположение')
 
     def __str__(self):
         return f'{self.brand} {self.model}'
+
+    @property
+    def information(self):
+        with open('.' + self.information_employee.url) as file_1:
+            return json.load(file_1)
 
 
 class EquipmentEmployee(models.Model):

@@ -1,0 +1,20 @@
+{% extends 'equipment_catalog/base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+	{% for c in equipment_list %}
+				<p><img class="img-article-left thumb" src="{{c.photo.url}}"></p>
+			<li><h2>{{c}}</h2>
+	{% autoescape on %}
+	<ul class="langitem">
+		{% for i, j in c.information.items %}
+		<li>{{i}} - {{j}}</li>
+		{% endfor %}
+	</ul>
+	{% endautoescape %}
+			<div class="clear"></div>
+			<p class="link-read-post"><a href="#">Подробнее</a></p>
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}
