@@ -1,5 +1,6 @@
 import json
 from django.db import models
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -22,6 +23,7 @@ class Employee(models.Model):
     name = models.CharField(max_length=50, verbose_name='Имя')
     surname = models.CharField(max_length=50, verbose_name='Фамилия')
     patronymic = models.CharField(max_length=50, verbose_name='Отчество', null=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     position_id = models.ForeignKey('Position', on_delete=models.PROTECT, verbose_name='Должность')
     phone_number = PhoneNumberField(region='RU', verbose_name='Номер телефона', unique=True, null=False, blank=False)
 
@@ -32,6 +34,9 @@ class Employee(models.Model):
             p = ''
         return f'{self.name} {self.patronymic} {self.surname}'
 
+    def get_absolute_url(self):
+        return reverse('employee', kwargs={'employee_slug': self.slug})
+
 
 class EquipmentCategory(models.Model):
     class Meta:
@@ -39,6 +44,7 @@ class EquipmentCategory(models.Model):
         verbose_name_plural = 'Категории оборудования'
 
     name = models.CharField(max_length=100, verbose_name='Название категории')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
 
     def __str__(self):
         return self.name
@@ -51,6 +57,7 @@ class Equipment(models.Model):
 
     brand = models.CharField(max_length=100, verbose_name='Марка')
     model = models.CharField(max_length=100, verbose_name='Модель', null=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     category = models.ForeignKey('EquipmentCategory', on_delete=models.PROTECT, verbose_name='Категория')
     information_employee = models.FileField(upload_to='description_equipment/%Y/%m/%d/', verbose_name='Характеристики')
     additional_information = models.URLField(verbose_name='Дополнительная информация', null=True)
@@ -60,10 +67,17 @@ class Equipment(models.Model):
     def __str__(self):
         return f'{self.brand} {self.model}'
 
+    def get_absolute_url(self):
+        return reverse('equipment', kwargs={'equipment_slug': self.slug})
+
     @property
     def information(self):
         with open('.' + self.information_employee.url) as file_1:
             return json.load(file_1)
+
+    @property
+    def equipment_employee(self):
+        return [i.employee for i in EquipmentEmployee.objects.filter(equipment=self.pk)]
 
 
 class EquipmentEmployee(models.Model):

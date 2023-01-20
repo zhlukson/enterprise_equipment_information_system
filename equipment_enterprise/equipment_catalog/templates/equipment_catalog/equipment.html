@@ -1,4 +1,19 @@
 {% extends 'equipment_catalog/base.html' %}
 
 {% block content %}
+<h1>{{title}}</h1>
+<p><img class="img-article-left thumb" src="{{equipment.photo.url}}"></p>
+<ul class="langitem">
+        {% for i, j in equipment.information.items %}
+            <li>{{i}} - {{j}}</li>
+        {% endfor %}
+		<li><a href="{{equipment.additional_information}}">Больше информации</a></li>
+	    <li>Расположение - {{equipment.location}}</li>
+</ul>
+<h3>Сотрудники, допущенные к работе на данном оборудовании</h3>
+<ul class="langitem">
+    {% for i in equipment.equipment_employee %}
+            <li><a href="#">{{i}}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}
