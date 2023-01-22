@@ -78,6 +78,10 @@ class Equipment(models.Model):
     def equipment_employee(self):
         return [i.employee for i in EquipmentEmployee.objects.filter(equipment=self.pk)]
 
+    @property
+    def equipment_location(self):
+        return EquipmentLocation.objects.filter(equipment=self.pk)
+
 
 class EquipmentEmployee(models.Model):
     class Meta:

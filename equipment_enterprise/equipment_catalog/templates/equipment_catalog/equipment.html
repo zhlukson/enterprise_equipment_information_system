@@ -8,7 +8,12 @@
             <li>{{i}} - {{j}}</li>
         {% endfor %}
 		<li><a href="{{equipment.additional_information}}">Больше информации</a></li>
-	    <li>Расположение - {{equipment.location}}</li>
+</ul>
+<h3>Расположение</h3>
+<ul class="langitem">
+    {% for i in equipment.equipment_location %}
+    <li><p>{{i}}</p></li>
+    {% endfor %}
 </ul>
 <h3>Сотрудники, допущенные к работе на данном оборудовании</h3>
 <ul class="langitem">
