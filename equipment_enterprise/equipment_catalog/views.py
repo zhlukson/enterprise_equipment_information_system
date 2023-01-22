@@ -22,6 +22,7 @@ class EquipmentView(DeleteView):
     template_name = 'equipment_catalog/equipment.html'
     context_object_name = 'equipment'
     slug_url_kwarg = 'equipment_slug'
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         eq = Equipment.objects.filter(slug=self.kwargs['equipment_slug'])
@@ -29,6 +30,25 @@ class EquipmentView(DeleteView):
         context['cats'] = cats
         context['menu'] = menu
         return context
+
+
+class CategoryViews(ListView):
+    model = Equipment
+    template_name = 'equipment_catalog/index.html'
+    context_object_name = 'equipment_list'
+    slug_url_kwarg = 'category_slug'
+
+    def get_queryset(self):
+        return Equipment.objects.filter(category_id__slug=self.kwargs['category_slug'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['cats'] = cats
+        context['title'] = list(EquipmentCategory.objects.filter(slug=self.kwargs['category_slug']))[0]
+        return context
+
+
 
 
 

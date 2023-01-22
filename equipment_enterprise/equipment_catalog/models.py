@@ -49,6 +49,8 @@ class EquipmentCategory(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
 
 class Equipment(models.Model):
     class Meta:
