@@ -1,0 +1,8 @@
+{% extends 'equipment_catalog/base.html' %}
+
+{% block content %}
+    {% for i in employees_list %}
+        <p>{{i}}</p>
+        <p class="link-read-post"><a href="{{ i.get_absolute_url }}">Подробнее</a></p>
+    {% endfor %}
+{% endblock %}

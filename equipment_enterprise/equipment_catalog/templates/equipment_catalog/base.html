@@ -29,8 +29,11 @@
 <!-- Sidebar слева -->
 	<td valign="top" class="left-chapters">
 	<ul id="leftchapters">
+		{% if left_bar == 'cat' %}
 			<li class="selected"><a href="{% url 'home' %}">Все категории</a></li>
-
+		{% elif left_bar == 'pos' %}
+			<li class="selected"><a href="{% url 'employees' %}">Все должности</a></li>
+		{% endif %}
 		{% for c in cats %}
 				<li class="selected"><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
 		{% endfor %}

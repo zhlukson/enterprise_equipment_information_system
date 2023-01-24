@@ -1,0 +1,15 @@
+{% extends 'equipment_catalog/base.html' %}
+
+{% block content %}
+<h3>{{employee}}</h3>
+    <ul class="langitem">
+        <li><p>Должность - {{employee.get_position}}</p></li>
+        <li><p>Номер телефона - {{employee.phone_number}}</p></li>
+    </ul>
+<h3>Обоудование, к работе на которых допущен</h3>
+    <ul class="langitem">
+        {% for i in employee.employee_equipment %}
+            <li><a href="{{ i.get_absolute_url }}">{{i}}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

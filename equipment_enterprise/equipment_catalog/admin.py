@@ -13,8 +13,11 @@ class EquipmentAdmin(admin.ModelAdmin):
 class EquipmentCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
+class PositionAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
 
-admin.site.register(Position)
+
+admin.site.register(Position, PositionAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EquipmentCategory, EquipmentCategoryAdmin)
 admin.site.register(Equipment, EquipmentAdmin)
