@@ -18,7 +18,7 @@
 <h3>Сотрудники, допущенные к работе на данном оборудовании</h3>
 <ul class="langitem">
     {% for i in equipment.equipment_employee %}
-            <li><a href="#">{{i}}</a></li>
+            <li><a href="{{ i.get_absolute_url }}">{{i}}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}

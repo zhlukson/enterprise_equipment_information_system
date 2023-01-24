@@ -9,10 +9,18 @@ class Position(models.Model):
         verbose_name = ' Должность'
         verbose_name_plural = 'Должности'
 
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     name = models.CharField(max_length=100, verbose_name='Название должности')
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('positions', kwargs={'position_slug': self.slug})
+
+    @classmethod
+    def cat(self):
+        return 'pos'
 
 
 class Employee(models.Model):
@@ -32,10 +40,19 @@ class Employee(models.Model):
             p = self.patronymic
         else:
             p = ''
-        return f'{self.name} {self.patronymic} {self.surname}'
+        return f'{self.name} {p} {self.surname}'
 
     def get_absolute_url(self):
-        return reverse('employee', kwargs={'employee_slug': self.slug})
+        return reverse('employee_detail', kwargs={'employee_slug': self.slug, 'position_slug': self.position_id.slug})
+
+    def check_patronymic(self):
+        return bool(self.patronymic)
+
+    def employee_equipment(self):
+        return [i.equipment for i in EquipmentEmployee.objects.filter(employee=self.pk)]
+
+    def get_position(self):
+        return Position.objects.get(pk=self.position_id.pk)
 
 
 class EquipmentCategory(models.Model):
@@ -51,6 +68,10 @@ class EquipmentCategory(models.Model):
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})
+
+    @classmethod
+    def cat(cls):
+        return 'cat'
 
 class Equipment(models.Model):
     class Meta:
@@ -69,7 +90,7 @@ class Equipment(models.Model):
         return f'{self.brand} {self.model}'
 
     def get_absolute_url(self):
-        return reverse('equipment', kwargs={'equipment_slug': self.slug})
+        return reverse('equipments', kwargs={'equipment_slug': self.slug, 'category_slug': self.category.slug})
 
     @property
     def information(self):
