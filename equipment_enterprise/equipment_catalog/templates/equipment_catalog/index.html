@@ -14,6 +14,7 @@
 	{% endautoescape %}
 			<div class="clear"></div>
 			<p class="link-read-post"><a href="{{ c.get_absolute_url }}">Подробнее</a></p>
+			<p class="link-read-post"><a href="{% url 'delete_equipment' c.category.slug c.slug %}">Удалить</a></p>
 			</li>
 	{% endfor %}
 </ul>

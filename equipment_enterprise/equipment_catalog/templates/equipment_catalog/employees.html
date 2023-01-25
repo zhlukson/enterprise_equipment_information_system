@@ -4,5 +4,6 @@
     {% for i in employees_list %}
         <p>{{i}}</p>
         <p class="link-read-post"><a href="{{ i.get_absolute_url }}">Подробнее</a></p>
+        <p class="link-read-post"><a href="{% url 'delete_employee' i.position_id.slug i.slug %}">Удалить</a></p>
     {% endfor %}
 {% endblock %}

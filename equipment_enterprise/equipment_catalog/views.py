@@ -1,6 +1,6 @@
 from django.http import request
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from .models import *
 from .utils import *
 from .forms import *
@@ -158,7 +158,7 @@ class CreateEquipmentEmployeeView(CreateView):
         return context
 
     def form_valid(self, form):
-        return redirect('home')
+        return redirect('employees')
 
 
 class CreateEquipmentLocationView(CreateView):
@@ -177,6 +177,41 @@ class CreateEquipmentLocationView(CreateView):
     def form_valid(self, form):
         return redirect('home')
 
+
+class DeleteEmployeeView(DeleteView):
+    model = Employee
+    template_name = 'equipment_catalog/delete.html'
+    slug_url_kwarg = 'employee_slug'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удалить сотрудника'
+        context['menu'] = menu
+        context['cats'] = positions
+        context['left_bar'] = Position.cat()
+        context['ur'] = 'delete_employee'
+        return context
+
+    def form_valid(self, form):
+        Employee.objects.filter(slug=self.kwargs['employee_slug']).delete()
+        return redirect('employees')
+
+
+class DeleteEquipmentView(DeleteView):
+    model = Equipment
+    template_name = 'equipment_catalog/delete.html'
+    slug_url_kwarg = 'equipment_slug'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удалить оборудование'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        context['ur'] = 'delete_equipment'
+        return context
+
+    def form_valid(self, form):
+        Employee.objects.filter(slug=self.kwargs['equipment_slug']).delete()
+        return redirect('home')
 
 
 

@@ -41,12 +41,10 @@
 			{% if left_bar == 'cat' %}
 			<hr>
 			<li class="selected"><a href="{% url 'add_equipment' %}">Добавить оборудование</a></li>
-			<li class="selected"><a href="#">Удалить оборудование</a></li>
 			<li class="selected"><a href="{% url 'add_equipment_location' %}">Разместить оборудование</a></li>
 		{% elif left_bar == 'pos' %}
 			<hr>
 			<li class="selected"><a href="{% url 'add_employee' %}">Добавить сотрудника</a></li>
-			<li class="selected"><a href="#">Удалить сотрудника</a></li>
 			<li class="selected"><a href="{% url 'add_equipment_employee' %}">Допустить сотрудника к оборудованию</a></li>
 		{% endif %}
 		</li>

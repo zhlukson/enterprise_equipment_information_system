@@ -127,8 +127,8 @@ class EquipmentEmployee(models.Model):
         verbose_name_plural = 'Оборудование - Сотрудник'
         unique_together = ['equipment', 'employee']
 
-    equipment = models.ForeignKey('Equipment', on_delete=models.PROTECT, verbose_name="Оборудование")
-    employee = models.ForeignKey('Employee', on_delete=models.PROTECT, verbose_name="Сотрудник, допущенный к работе")
+    equipment = models.ForeignKey('Equipment', on_delete=models.CASCADE, verbose_name="Оборудование")
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE, verbose_name="Сотрудник, допущенный к работе")
 
     def __str__(self):
         return f'{self.equipment} - {self.employee}'
@@ -162,8 +162,8 @@ class EquipmentLocation(models.Model):
         verbose_name_plural = 'Оборудование - Расположение'
         unique_together = ['location', 'equipment']
 
-    location = models.ForeignKey('Workshops', on_delete=models.PROTECT, verbose_name='Расположение')
-    equipment = models.ForeignKey('Equipment', on_delete=models.PROTECT, verbose_name='Оборудование')
+    location = models.ForeignKey('Workshops', on_delete=models.CASCADE, verbose_name='Расположение')
+    equipment = models.ForeignKey('Equipment', on_delete=models.CASCADE, verbose_name='Оборудование')
 
     def __str__(self):
         return f'{self.equipment} --> {self.location}'
