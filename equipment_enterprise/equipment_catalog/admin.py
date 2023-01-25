@@ -3,11 +3,11 @@ from django.contrib import admin
 from .models import *
 
 class EmployeeAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name', 'surname', 'patronymic',)}
+    prepopulated_fields = {'slug': ('name', 'patronymic', 'surname')}
 
 
 class EquipmentAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('brand', 'model',)}
+    prepopulated_fields = {'slug': ('brand', 'model')}
 
 
 class EquipmentCategoryAdmin(admin.ModelAdmin):

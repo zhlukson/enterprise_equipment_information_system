@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.http import request
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, CreateView
 from .models import *
 from .utils import *
+from .forms import *
 
 
 class HomeView(ListView):
@@ -112,6 +114,52 @@ class EmployeesViewDetail(DetailView):
         context['cats'] = positions
         context['left_bar'] = Position.cat()
         return context
+
+
+class CreateEmployeeView(CreateView):
+    form_class = CreateEmployeeForm
+    template_name = 'equipment_catalog/add_employee_or_equipment.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавить сотрудника'
+        context['menu'] = menu
+        context['cats'] = positions
+        context['left_bar'] = Position.cat()
+        context['ur'] = 'add_employee'
+        return context
+
+
+class CreateEquipmentView(CreateView):
+    form_class = CreateEquipmentForm
+    template_name = 'equipment_catalog/add_employee_or_equipment.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавить оборудование'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        context['ur'] = 'add_equipment'
+        return context
+
+
+class CreateEquipmentEmployeeView(CreateView):
+    form_class = CreateEquipmentEmployeeForm
+    template_name = 'equipment_catalog/add_equipment_employee.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Допустить сотрудника к оборудованию'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        return context
+
+    def form_valid(self, form):
+        return redirect('home')
+
+
 
 
 

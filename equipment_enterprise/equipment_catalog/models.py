@@ -2,6 +2,7 @@ import json
 from django.db import models
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
+from slugify import slugify
 
 
 class Position(models.Model):
@@ -54,6 +55,13 @@ class Employee(models.Model):
     def get_position(self):
         return Position.objects.get(pk=self.position_id.pk)
 
+    def save(self, *args, **kwargs):
+        count = Employee.objects.filter(name=self.name, surname=self.surname, patronymic=self.patronymic).count()
+        if count == 0:
+            count = ''
+        self.slug = slugify(f'{self.name}-{self.patronymic}-{self.surname}-{count}')
+        return super(Employee, self).save(*args, **kwargs)
+
 
 class EquipmentCategory(models.Model):
     class Meta:
@@ -104,6 +112,13 @@ class Equipment(models.Model):
     @property
     def equipment_location(self):
         return EquipmentLocation.objects.filter(equipment=self.pk)
+
+    def save(self, *args, **kwargs):
+        count = Equipment.objects.filter(brand=self.brand, model=self.model).count()
+        if count == 0:
+            count = ''
+        self.slug = slugify(f'{self.brand}-{self.model}-{count}')
+        return super(Equipment, self).save(*args, **kwargs)
 
 
 class EquipmentEmployee(models.Model):
