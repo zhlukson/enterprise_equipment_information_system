@@ -17,3 +17,9 @@ class CreateEquipmentEmployeeForm(forms.ModelForm):
     class Meta:
         model = EquipmentEmployee
         fields = ['equipment', 'employee']
+
+
+class CreateEquipmentLocationForm(forms.ModelForm):
+    class Meta:
+        model = EquipmentLocation
+        fields = ['location', 'equipment']

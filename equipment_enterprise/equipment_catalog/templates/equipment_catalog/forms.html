@@ -2,9 +2,18 @@
 
 {% block content %}
 
-<h1>{{title}}</h1>
 
+
+<h1>{{title}}</h1>
+{% if ur == 'add_employee' %}
+<form action="{% url 'add_employee' %}" method="post" enctype="multipart/form-data">
+{% elif ur == 'add_equipment' %}
+<form action="{% url 'add_equipment' %}" method="post" enctype="multipart/form-data">
+{% elif ur == 'add_equipment_emploee' %}
 <form action="{% url 'add_equipment_employee' %}" method="post" enctype="multipart/form-data">
+{% elif ur == 'add_equipment_location' %}
+<form action="{% url 'add_equipment_location' %}" method="post" enctype="multipart/form-data">
+{% endif %}
     {% csrf_token %}
 
     <div class="form-error">{{ form.non_field_errors }}</div>

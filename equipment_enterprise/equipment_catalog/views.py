@@ -118,7 +118,7 @@ class EmployeesViewDetail(DetailView):
 
 class CreateEmployeeView(CreateView):
     form_class = CreateEmployeeForm
-    template_name = 'equipment_catalog/add_employee_or_equipment.html'
+    template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -132,7 +132,7 @@ class CreateEmployeeView(CreateView):
 
 class CreateEquipmentView(CreateView):
     form_class = CreateEquipmentForm
-    template_name = 'equipment_catalog/add_employee_or_equipment.html'
+    template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -146,21 +146,36 @@ class CreateEquipmentView(CreateView):
 
 class CreateEquipmentEmployeeView(CreateView):
     form_class = CreateEquipmentEmployeeForm
-    template_name = 'equipment_catalog/add_equipment_employee.html'
+    template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Допустить сотрудника к оборудованию'
         context['menu'] = menu
         context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
+        context['left_bar'] = Position.cat()
+        context['ur'] = 'add_equipment_emploee'
         return context
 
     def form_valid(self, form):
         return redirect('home')
 
 
+class CreateEquipmentLocationView(CreateView):
+    form_class = CreateEquipmentLocationForm
+    template_name = 'equipment_catalog/forms.html'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Размемтить оборудование'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        context['ur'] = 'add_equipment_location'
+        return context
+
+    def form_valid(self, form):
+        return redirect('home')
 
 
 
