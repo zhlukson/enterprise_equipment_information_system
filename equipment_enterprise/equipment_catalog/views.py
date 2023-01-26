@@ -1,5 +1,10 @@
-from django.http import request
+from django.contrib.auth import logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.mixins import AccessMixin
+from django.contrib.auth.views import LoginView
+from django.http import request, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from .models import *
 from .utils import *
@@ -129,6 +134,10 @@ class CreateEmployeeView(CreateView):
         context['ur'] = 'add_employee'
         return context
 
+    # def get(self, request):
+    #     if not request.user.is_authenticated:
+    #         return HttpResponseForbidden()
+
 
 class CreateEquipmentView(CreateView):
     form_class = CreateEquipmentForm
@@ -158,6 +167,7 @@ class CreateEquipmentEmployeeView(CreateView):
         return context
 
     def form_valid(self, form):
+        EquipmentEmployee(**form.cleaned_data).save()
         return redirect('employees')
 
 
@@ -175,6 +185,7 @@ class CreateEquipmentLocationView(CreateView):
         return context
 
     def form_valid(self, form):
+        EquipmentLocation(**form.cleaned_data).save()
         return redirect('home')
 
 
@@ -212,6 +223,27 @@ class DeleteEquipmentView(DeleteView):
     def form_valid(self, form):
         Employee.objects.filter(slug=self.kwargs['equipment_slug']).delete()
         return redirect('home')
+
+
+class LoginUserView(LoginView):
+    form_class = AuthenticationForm
+    template_name = 'equipment_catalog/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Вход'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
 
 
