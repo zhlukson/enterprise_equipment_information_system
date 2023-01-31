@@ -13,6 +13,9 @@
 <ul class="langitem">
     {% for i in equipment.equipment_location %}
     <li><p>{{i.location}}</p></li>
+    {% if request.user.is_authenticated %}
+    <p class="link-read-post"><a href="{% url 'delete_equipment_location' i.id %}">Удалить</a></p>
+    {% endif %}
     {% endfor %}
 </ul>
 <h3>Сотрудники, допущенные к работе на данном оборудовании</h3>

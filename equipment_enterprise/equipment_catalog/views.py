@@ -241,6 +241,22 @@ class LoginUserView(LoginView):
         return reverse_lazy('home')
 
 
+class DeleteEquipmentLocationView(DeleteView):
+    model = EquipmentLocation
+    template_name = 'equipment_catalog/delete_equipment_location.html'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удалить оборудование из цеха'
+        context['menu'] = menu
+        context['cats'] = cats
+        context['left_bar'] = EquipmentCategory.cat()
+        return context
+
+    def form_valid(self, form):
+        EquipmentLocation.objects.filter(id=self.kwargs['pk']).delete()
+        return redirect('home')
+
+
 def logout_user(request):
     logout(request)
     return redirect('login')
