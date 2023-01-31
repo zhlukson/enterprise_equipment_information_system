@@ -22,17 +22,6 @@ class HomeView(DataMixin, ListView):
         return context | context_1
 
 
-class PositionsView(DataMixin, ListView):
-    model = Employee
-    template_name = 'equipment_catalog/employees.html'
-    context_object_name = 'employees_list'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context_1 = super().get_user_context(cats=positions, title='Сотрудники', left_bar=Position.cat())
-        return context | context_1
-
-
 class EquipmentView(DataMixin, DetailView):
     model = Equipment
     template_name = 'equipment_catalog/equipment.html'

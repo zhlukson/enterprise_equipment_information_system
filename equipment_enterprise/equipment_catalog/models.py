@@ -28,6 +28,7 @@ class Employee(models.Model):
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
+        ordering = ['name', 'surname', 'patronymic']
 
     name = models.CharField(max_length=50, verbose_name='Имя')
     surname = models.CharField(max_length=50, verbose_name='Фамилия')
@@ -85,6 +86,7 @@ class Equipment(models.Model):
     class Meta:
         verbose_name = 'Оборудование'
         verbose_name_plural = 'Оборудование'
+        ordering = ['brand', 'model']
 
     brand = models.CharField(max_length=100, verbose_name='Марка')
     model = models.CharField(max_length=100, verbose_name='Модель', null=True)
