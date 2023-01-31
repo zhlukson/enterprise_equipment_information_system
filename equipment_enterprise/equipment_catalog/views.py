@@ -11,35 +11,29 @@ from .utils import *
 from .forms import *
 
 
-class HomeView(ListView):
+class HomeView(DataMixin, ListView):
     model = Equipment
     template_name = 'equipment_catalog/index.html'
     context_object_name = 'equipment_list'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        context['cats'] = cats
-        context['menu'] = menu
-        context['left_bar'] = EquipmentCategory.cat()
-        return context
+        context_1 = super().get_user_context(title='Главная страница', cats=cats, left_bar=EquipmentCategory.cat())
+        return context | context_1
 
 
-class PositionsView(ListView):
+class PositionsView(DataMixin, ListView):
     model = Employee
     template_name = 'equipment_catalog/employees.html'
     context_object_name = 'employees_list'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['cats'] = positions
-        context['title'] = 'Сотрудники'
-        context['left_bar'] = Position.cat()
-        return context
+        context_1 = super().get_user_context(cats=positions, title='Сотрудники', left_bar=Position.cat())
+        return context | context_1
 
 
-class EquipmentView(DetailView):
+class EquipmentView(DataMixin, DetailView):
     model = Equipment
     template_name = 'equipment_catalog/equipment.html'
     context_object_name = 'equipment'
@@ -48,14 +42,11 @@ class EquipmentView(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         eq = Equipment.objects.filter(slug=self.kwargs['equipment_slug'])
-        context['title'] = eq[0].brand + eq[0].model
-        context['cats'] = cats
-        context['menu'] = menu
-        context['left_bar'] = EquipmentCategory.cat()
-        return context
+        context_1 = super().get_user_context(title=eq[0].brand + eq[0].model, cats=cats, left_bar=EquipmentCategory.cat())
+        return context | context_1
 
 
-class CategoryViews(ListView):
+class CategoryViews(DataMixin, ListView):
     model = Equipment
     template_name = 'equipment_catalog/index.html'
     context_object_name = 'equipment_list'
@@ -66,28 +57,23 @@ class CategoryViews(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['cats'] = cats
-        context['title'] = list(EquipmentCategory.objects.filter(slug=self.kwargs['category_slug']))[0]
-        context['left_bar'] = EquipmentCategory.cat()
-        return context
+        title = list(EquipmentCategory.objects.filter(slug=self.kwargs['category_slug']))[0]
+        context_1 = super().get_user_context(title=title, cats=cats, left_bar=EquipmentCategory.cat())
+        return context | context_1
 
 
-class EmployeesView(ListView):
+class EmployeesView(DataMixin, ListView):
     model = Employee
     template_name = 'equipment_catalog/employees.html'
     context_object_name = 'employees_list'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['cats'] = positions
-        context['title'] = 'Сотрудники'
-        context['left_bar'] = Position.cat()
-        return context
+        context_1 = super().get_user_context(title='Сотрудники', cats=positions, left_bar=Position.cat())
+        return context | context_1
 
 
-class EmployeesPositionView(ListView):
+class EmployeesPositionView(DataMixin, ListView):
     model = Employee
     template_name = 'equipment_catalog/employees.html'
     context_object_name = 'employees_list'
@@ -98,14 +84,12 @@ class EmployeesPositionView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['cats'] = positions
-        context['title'] = list(Position.objects.filter(slug=self.kwargs['position_slug']))[0]
-        context['left_bar'] = Position.cat()
-        return context
+        title = list(Position.objects.filter(slug=self.kwargs['position_slug']))[0]
+        context_1 = super().get_user_context(title=title, cats=positions, left_bar=Position.cat())
+        return context | context_1
 
 
-class EmployeesViewDetail(DetailView):
+class EmployeesViewDetail(DataMixin, DetailView):
     model = Employee
     template_name = 'equipment_catalog/employee.html'
     context_object_name = 'employee'
@@ -114,143 +98,111 @@ class EmployeesViewDetail(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         emp = Employee.objects.filter(slug=self.kwargs['employee_slug'])
-        context['title'] = emp[0]
-        context['menu'] = menu
-        context['cats'] = positions
-        context['left_bar'] = Position.cat()
-        return context
+        context_1 = super().get_user_context(title=emp[0], cats=positions, left_bar=Position.cat())
+        return context | context_1
 
 
-class CreateEmployeeView(CreateView):
+class CreateEmployeeView(DataMixin, CreateView):
     form_class = CreateEmployeeForm
     template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Добавить сотрудника'
-        context['menu'] = menu
-        context['cats'] = positions
-        context['left_bar'] = Position.cat()
-        context['ur'] = 'add_employee'
-        return context
+        context_1 = super().get_user_context(title='Добавить сотрудника', cats=positions, left_bar=Position.cat(), ur='add_employee')
+        return context | context_1
 
     # def get(self, request):
     #     if not request.user.is_authenticated:
     #         return HttpResponseForbidden()
 
 
-class CreateEquipmentView(CreateView):
+class CreateEquipmentView(DataMixin, CreateView):
     form_class = CreateEquipmentForm
     template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Добавить оборудование'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
-        context['ur'] = 'add_equipment'
-        return context
+        context_1 = super().get_user_context(title='Добавить оборудование', cats=cats, left_bar=EquipmentCategory.cat(), ur='add_equipment')
+        return context | context_1
 
 
-class CreateEquipmentEmployeeView(CreateView):
+class CreateEquipmentEmployeeView(DataMixin, CreateView):
     form_class = CreateEquipmentEmployeeForm
     template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Допустить сотрудника к оборудованию'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = Position.cat()
-        context['ur'] = 'add_equipment_emploee'
-        return context
+        context_1 = super().get_user_context(title='Допустить сотрудника к оборудованию', cats=cats, left_bar=Position.cat(), ur='add_equipment_emploee')
+        return context | context_1
 
     def form_valid(self, form):
         EquipmentEmployee(**form.cleaned_data).save()
         return redirect('employees')
 
 
-class CreateEquipmentLocationView(CreateView):
+class CreateEquipmentLocationView(DataMixin, CreateView):
     form_class = CreateEquipmentLocationForm
     template_name = 'equipment_catalog/forms.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Размемтить оборудование'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
-        context['ur'] = 'add_equipment_location'
-        return context
+        context_1 = super().get_user_context(title='Разместить оборудование', cats=cats, left_bar=EquipmentCategory.cat(), ur='add_equipment_location')
+        return context | context_1
 
     def form_valid(self, form):
         EquipmentLocation(**form.cleaned_data).save()
         return redirect('home')
 
 
-class DeleteEmployeeView(DeleteView):
+class DeleteEmployeeView(DataMixin, DeleteView):
     model = Employee
     template_name = 'equipment_catalog/delete.html'
     slug_url_kwarg = 'employee_slug'
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Удалить сотрудника'
-        context['menu'] = menu
-        context['cats'] = positions
-        context['left_bar'] = Position.cat()
-        context['ur'] = 'delete_employee'
-        return context
+        context_1 = super().get_user_context(title='Удалить сотрудника', cats=positions, left_bar=Position.cat(), ur='delete_employee')
+        return context | context_1
 
     def form_valid(self, form):
         Employee.objects.filter(slug=self.kwargs['employee_slug']).delete()
         return redirect('employees')
 
 
-class DeleteEquipmentView(DeleteView):
+class DeleteEquipmentView(DataMixin, DeleteView):
     model = Equipment
     template_name = 'equipment_catalog/delete.html'
     slug_url_kwarg = 'equipment_slug'
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Удалить оборудование'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
-        context['ur'] = 'delete_equipment'
-        return context
+        context_1 = super().get_user_context(title='Удалить оборудование', cats=cats, left_bar=EquipmentCategory.cat(), ur='delete_equipment')
+        return context | context_1
 
     def form_valid(self, form):
-        Employee.objects.filter(slug=self.kwargs['equipment_slug']).delete()
+        Equipment.objects.filter(slug=self.kwargs['equipment_slug']).delete()
         return redirect('home')
 
 
-class LoginUserView(LoginView):
+class LoginUserView(DataMixin, LoginView):
     form_class = AuthenticationForm
     template_name = 'equipment_catalog/login.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Вход'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
-        return context
+        context_1 = super().get_user_context(title='Вход', cats=cats, left_bar=EquipmentCategory.cat())
+        return context | context_1
 
     def get_success_url(self):
         return reverse_lazy('home')
 
 
-class DeleteEquipmentLocationView(DeleteView):
+class DeleteEquipmentLocationView(DataMixin, DeleteView):
     model = EquipmentLocation
     template_name = 'equipment_catalog/delete_equipment_location.html'
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Удалить оборудование из цеха'
-        context['menu'] = menu
-        context['cats'] = cats
-        context['left_bar'] = EquipmentCategory.cat()
-        return context
+        context_1 = super().get_user_context(title='Удалить оборудование из цеха', cats=cats, left_bar=EquipmentCategory.cat())
+        return context | context_1
 
     def form_valid(self, form):
         EquipmentLocation.objects.filter(id=self.kwargs['pk']).delete()

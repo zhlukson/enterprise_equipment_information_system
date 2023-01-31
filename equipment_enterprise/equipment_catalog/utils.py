@@ -10,4 +10,7 @@ menu = [
 
 
 class DataMixin:
-    pass
+    def get_user_context(self, **kwargs):
+        context = kwargs
+        context['menu'] = menu
+        return context
