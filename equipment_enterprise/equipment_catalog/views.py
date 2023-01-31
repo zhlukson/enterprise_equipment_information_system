@@ -1,8 +1,9 @@
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.mixins import AccessMixin
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import request, HttpResponse, HttpResponseForbidden
+from django.http import request, HttpResponse, HttpResponseForbidden, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
@@ -91,7 +92,7 @@ class EmployeesViewDetail(DataMixin, DetailView):
         return context | context_1
 
 
-class CreateEmployeeView(DataMixin, CreateView):
+class CreateEmployeeView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = CreateEmployeeForm
     template_name = 'equipment_catalog/forms.html'
 
@@ -100,12 +101,8 @@ class CreateEmployeeView(DataMixin, CreateView):
         context_1 = super().get_user_context(title='Добавить сотрудника', cats=positions, left_bar=Position.cat(), ur='add_employee')
         return context | context_1
 
-    # def get(self, request):
-    #     if not request.user.is_authenticated:
-    #         return HttpResponseForbidden()
 
-
-class CreateEquipmentView(DataMixin, CreateView):
+class CreateEquipmentView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = CreateEquipmentForm
     template_name = 'equipment_catalog/forms.html'
 
@@ -115,7 +112,7 @@ class CreateEquipmentView(DataMixin, CreateView):
         return context | context_1
 
 
-class CreateEquipmentEmployeeView(DataMixin, CreateView):
+class CreateEquipmentEmployeeView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = CreateEquipmentEmployeeForm
     template_name = 'equipment_catalog/forms.html'
 
@@ -129,7 +126,7 @@ class CreateEquipmentEmployeeView(DataMixin, CreateView):
         return redirect('employees')
 
 
-class CreateEquipmentLocationView(DataMixin, CreateView):
+class CreateEquipmentLocationView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = CreateEquipmentLocationForm
     template_name = 'equipment_catalog/forms.html'
 
@@ -143,7 +140,7 @@ class CreateEquipmentLocationView(DataMixin, CreateView):
         return redirect('home')
 
 
-class DeleteEmployeeView(DataMixin, DeleteView):
+class DeleteEmployeeView(LoginRequiredMixin, DataMixin, DeleteView):
     model = Employee
     template_name = 'equipment_catalog/delete.html'
     slug_url_kwarg = 'employee_slug'
@@ -157,7 +154,7 @@ class DeleteEmployeeView(DataMixin, DeleteView):
         return redirect('employees')
 
 
-class DeleteEquipmentView(DataMixin, DeleteView):
+class DeleteEquipmentView(LoginRequiredMixin, DataMixin, DeleteView):
     model = Equipment
     template_name = 'equipment_catalog/delete.html'
     slug_url_kwarg = 'equipment_slug'
@@ -181,11 +178,15 @@ class LoginUserView(DataMixin, LoginView):
         context_1 = super().get_user_context(title='Вход', cats=cats, left_bar=EquipmentCategory.cat())
         return context | context_1
 
-    def get_success_url(self):
-        return reverse_lazy('home')
+    def get_success_url(self, **kwargs):
+        try:
+            redirect_to = self.request.GET['next']
+            return redirect_to
+        except:
+            return reverse_lazy('home')
 
 
-class DeleteEquipmentLocationView(DataMixin, DeleteView):
+class DeleteEquipmentLocationView(LoginRequiredMixin, DataMixin, DeleteView):
     model = EquipmentLocation
     template_name = 'equipment_catalog/delete_equipment_location.html'
     def get_context_data(self, *, object_list=None, **kwargs):
