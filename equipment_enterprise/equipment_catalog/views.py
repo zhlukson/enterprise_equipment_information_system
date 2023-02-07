@@ -170,7 +170,7 @@ class DeleteEquipmentView(LoginRequiredMixin, DataMixin, DeleteView):
 
 
 class LoginUserView(DataMixin, LoginView):
-    form_class = AuthenticationForm
+    form_class = LoginForm
     template_name = 'equipment_catalog/login.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
